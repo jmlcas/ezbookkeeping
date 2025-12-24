@@ -23,7 +23,7 @@ services:
       - mysql  
 
   mysql:        
-    image: mysql:8.0  
+    image: mariadb:latest  
     container_name: ezbookkeeping-mysql  
     restart: unless-stopped  
     volumes:
