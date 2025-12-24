@@ -1,0 +1,39 @@
+services:
+
+  ezbookkeeping:
+    image: mayswind/ezbookkeeping:latest
+    container_name: ezbookkeeping
+    restart: unless-stopped 
+    ports:
+      - "8200:8080" 
+    volumes:
+      - /etc/localtime:/etc/localtime:ro 
+      - ./storage:/ezbookkeeping/storage 
+      - ./log:/ezbookkeeping/log  
+    environment:
+      - EBK_DATABASE_TYPE=mysql 
+      - EBK_DATABASE_HOST=mysql:3306 
+      - EBK_DATABASE_NAME=ezbookkeeping 
+      - EBK_DATABASE_USER=ezbookkeeping  
+      - EBK_DATABASE_PASSWD=ezbookkeeping 
+      - EBK_LOG_MODE=file 
+      - EBK_SECURITY_SECRET_KEY=O0rxWj8gH8z2T9O79l8ndUczIHtUgV6bRY3CZfF0beE= 
+      - EBK_MCP_ENABLE_MCP=true  
+    depends_on:
+      - mysql  
+
+  mysql:        
+    image: mysql:8.0  
+    container_name: ezbookkeeping-mysql  
+    restart: unless-stopped  
+    volumes:
+      - ./data:/var/lib/mysql 
+    environment:
+      - MYSQL_DATABASE=ezbookkeeping  
+      - MYSQL_USER=ezbookkeeping  
+      - MYSQL_PASSWORD=ezbookkeeping  
+      - MYSQL_ROOT_PASSWORD=ezbookkeeping 
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p ezbookkeeping"]  
+      retries: 3  
+      timeout: 5s 
